@@ -1,22 +1,28 @@
 import express, { Express } from "express";
 import { port } from "./config";
 import { dynamodbClient } from "./system/dynamoDb";
-import { ListTablesCommand } from "@aws-sdk/client-dynamodb";
+import {
+  CreateTableCommand,
+  ListTablesCommand,
+} from "@aws-sdk/client-dynamodb";
+import { userParams } from "./models/userModel";
 
-const app: Express = express();
+const expressApp = async () => {
+  const app: Express = express();
 
-app.use(express.json());
+  app.use(express.json());
 
-dynamodbClient
-  .send(new ListTablesCommand({}))
-  .then(() => {
-    console.log("🔵 DynamoDB connected...");
-  })
-  .catch((err) => {
-    console.error(err.message);
-    throw err;
+  const tablesData = await dynamodbClient.send(new ListTablesCommand({}));
+
+  if (!tablesData.TableNames?.includes(userParams.TableName)) {
+    await dynamodbClient.send(new CreateTableCommand(userParams));
+  }
+
+  console.log("🔵 DynamoDB connected...");
+
+  app.listen(port, () => {
+    console.log(`🟢 App listening at http://localhost:${port}`);
   });
+};
 
-app.listen(port, () => {
-  console.log(`🟢 App listening at http://localhost:${port}`);
-});
+expressApp();

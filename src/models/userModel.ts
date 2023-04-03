@@ -1,28 +1,18 @@
 export const userParams = {
+  TableName: "Users",
+  KeySchema: [
+    { AttributeName: "ID", KeyType: "HASH" },
+    { AttributeName: "LastName", KeyType: "RANGE" },
+  ],
   AttributeDefinitions: [
     { AttributeName: "ID", AttributeType: "S" },
-    { AttributeName: "FirstName", AttributeType: "S" },
     { AttributeName: "LastName", AttributeType: "S" },
-    { AttributeName: "PhoneNumber", AttributeType: "S" },
-    { AttributeName: "Password", AttributeType: "S" },
   ],
-  KeySchema: [{ AttributeName: "ID", KeyType: "HASH" }],
   ProvisionedThroughput: {
     ReadCapacityUnits: 1,
     WriteCapacityUnits: 1,
   },
-  TableName: "Users",
-  GlobalSecondaryIndexes: [
-    {
-      IndexName: "PhoneNumberIndex",
-      KeySchema: [{ AttributeName: "PhoneNumber", KeyType: "HASH" }],
-      Projection: {
-        ProjectionType: "ALL",
-      },
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1,
-      },
-    },
-  ],
+  Projection: {
+    ProjectionType: "ALL",
+  },
 };
