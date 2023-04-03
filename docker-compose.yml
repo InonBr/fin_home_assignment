@@ -10,5 +10,3 @@ services:
       - AWS_SECRET_ACCESS_KEY=admin
       - AWS_REGION=us-west-2
       - DYNAMODB_LOCAL_ARGS=-dbPath /data/fin
-    volumes:
-      - ./data/fin:/data/fin
