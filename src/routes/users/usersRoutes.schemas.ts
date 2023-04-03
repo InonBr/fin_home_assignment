@@ -18,4 +18,12 @@ export const createNewUserSchema = object().shape({
     .required(),
 });
 
+export const userLogInSchema = object().shape({
+  id: string()
+    .matches(/^[0-9]{9}$/, "ID must be a 9-digit number")
+    .required(),
+  password: string().required(),
+});
+
 export type CreateNewUserSchemaType = InferType<typeof createNewUserSchema>;
+export type UserLogInSchemaType = InferType<typeof userLogInSchema>;

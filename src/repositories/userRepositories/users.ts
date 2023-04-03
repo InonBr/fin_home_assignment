@@ -1,7 +1,7 @@
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { UsersDataInterface } from "./interfaces";
 import { userParams } from "../../models/userModel";
-import { PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { dynamodbClient } from "../../system/dynamoDb";
 import { sign } from "jsonwebtoken";
 import { token } from "../../config";
@@ -31,6 +31,17 @@ export const createNewUser = async ({
   await dynamodbClient.send(new PutItemCommand(userData));
 };
 
+export const findUserById = async (userId: string) => {
+  const getItemParams = {
+    TableName: userParams.TableName,
+    Key: {
+      ID: { S: userId },
+    },
+  };
+
+  return (await dynamodbClient.send(new GetItemCommand(getItemParams))).Item;
+};
+
 export const createJwtToken = ({
   firstName,
   id,
@@ -47,3 +58,11 @@ export const createJwtToken = ({
     token
   );
 };
+
+export const comparePasswords = async ({
+  userPassword,
+  compareToPassword,
+}: {
+  userPassword: string;
+  compareToPassword: string;
+}) => await compare(userPassword, compareToPassword);
