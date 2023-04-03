@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=admin
+      - AWS_REGION=us-west-2
+      - DYNAMODB_LOCAL_ARGS=-dbPath /data/fin
+    volumes:
+      - ./data/fin:/data/fin
