@@ -19,36 +19,6 @@ const expressApp = async () => {
     await dynamodbClient.send(new CreateTableCommand(userParams));
   }
 
-  //   const params = {
-  //     TableName: "Users",
-  //     Item: {
-  //       ID: { S: "1" }, // string data type
-  //       FirstName: { S: "John" },
-  //       LastName: { S: "aaaaaaaaaa" },
-  //       PhoneNumber: { S: "qqqqqqqq" },
-  //       Password: { S: "password123" },
-  //     },
-  //     ConditionExpression: "attribute_not_exists(ID)",
-  //   };
-
-  //   const command = new PutItemCommand(params);
-
-  //   try {
-  //   const result = await dynamodbClient.send(command);
-  //   } catch (err) {
-  //     if (err instanceof Error) {
-  //       console.log(err.name);
-  //     }
-  //   }
-
-  //   const data = await dynamodbClient.send(
-  //     new ScanCommand({
-  //       TableName: "Users",
-  //     })
-  //   );
-
-  //   console.log(data.Items);
-
   console.log("🔵 DynamoDB connected...");
 
   app.use("/api", userRoute);
