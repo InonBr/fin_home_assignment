@@ -5,7 +5,7 @@ import {
   createNewUserSchema,
   userLogInSchema,
 } from "./usersRoutes.schemas";
-import { validateSchema } from "../../system/middlewares";
+import { auth, validateSchema } from "../../system/middlewares";
 import {
   comparePasswords,
   createJwtToken,
@@ -13,6 +13,7 @@ import {
   findUserById,
   hashPassword,
 } from "../../repositories/userRepositories/users";
+import { ModifiedRequestInterface } from "../../system/utils";
 
 const userRoute = Router();
 
@@ -88,6 +89,29 @@ userRoute.post(
         if (err.name === "ConditionalCheckFailedException") {
           return res.status(400).json({ msg: "user already exists" });
         }
+
+        return res.status(500).json({ msg: err.message });
+      }
+    }
+  }
+);
+
+userRoute.put(
+  "/user",
+  auth,
+  async (
+    req: ModifiedRequestInterface<{}, {}, CreateNewUserSchemaType>,
+    res: Response
+  ) => {
+    try {
+      const { firstName, id, lastName, phoneNumber } = req.currentUser!;
+
+      // const { firstName, id, lastName, password, phoneNumber } = req.body;
+
+      return res.status(201).json({ firstName, id, lastName, phoneNumber });
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err);
 
         return res.status(500).json({ msg: err.message });
       }

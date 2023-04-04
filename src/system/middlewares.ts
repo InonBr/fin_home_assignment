@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import { VerifyOptions, verify } from "jsonwebtoken";
 import { ValidationError, ObjectSchema } from "yup";
+import { token } from "../config";
+import { DecodedTokenInterface, ModifiedRequestInterface } from "./utils";
 
 export const validateSchema = (schema: ObjectSchema<any>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -18,4 +21,29 @@ export const validateSchema = (schema: ObjectSchema<any>) => {
       }
     }
   };
+};
+
+export const auth = (
+  req: ModifiedRequestInterface,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.headers.authorization) {
+    const jwtToken = req.headers.authorization.split(" ")[1];
+
+    verify(jwtToken, token, (err, decodedToken) => {
+      if (err) {
+        res.status(401).send("forbidden request");
+      }
+
+      const { firstName, id, lastName, phoneNumber } =
+        decodedToken as DecodedTokenInterface;
+
+      req.currentUser = { firstName, id, lastName, phoneNumber };
+    });
+
+    next();
+  } else {
+    res.status(401).send("forbidden request");
+  }
 };
