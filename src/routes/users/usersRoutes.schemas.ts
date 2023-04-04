@@ -25,5 +25,19 @@ export const userLogInSchema = object().shape({
   password: string().required(),
 });
 
+export const updateUserDetailsSchema = object().shape({
+  firstName: string().max(20).required(),
+  lastName: string().max(20).required(),
+  phoneNumber: string()
+    .matches(
+      /^[\+]?[(]?[0-9]{2,3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+      "Invalid phone number format"
+    )
+    .required(),
+});
+
 export type CreateNewUserSchemaType = InferType<typeof createNewUserSchema>;
 export type UserLogInSchemaType = InferType<typeof userLogInSchema>;
+export type UpdateUserDetailsSchemaType = InferType<
+  typeof updateUserDetailsSchema
+>;

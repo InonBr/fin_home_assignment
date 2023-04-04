@@ -1,7 +1,11 @@
 import { compare, hash } from "bcrypt";
 import { UsersDataInterface } from "./interfaces";
 import { userParams } from "../../models/userModel";
-import { GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+  GetItemCommand,
+  PutItemCommand,
+  UpdateItemCommand,
+} from "@aws-sdk/client-dynamodb";
 import { dynamodbClient } from "../../system/dynamoDb";
 import { sign } from "jsonwebtoken";
 import { token } from "../../config";
@@ -66,3 +70,31 @@ export const comparePasswords = async ({
   userPassword: string;
   compareToPassword: string;
 }) => await compare(userPassword, compareToPassword);
+
+export const updateUserInfo = async ({
+  firstName,
+  id,
+  lastName,
+  phoneNumber,
+}: Omit<UsersDataInterface, "password">) => {
+  const updateParams = {
+    TableName: userParams.TableName,
+    Key: {
+      ID: { S: id },
+    },
+    UpdateExpression:
+      "SET #phone = :phone, #lastName = :lastName, #firstName = :firstName",
+    ExpressionAttributeNames: {
+      "#phone": "PhoneNumber",
+      "#lastName": "LastName",
+      "#firstName": "FirstName",
+    },
+    ExpressionAttributeValues: {
+      ":phone": { S: phoneNumber },
+      ":lastName": { S: lastName },
+      ":firstName": { S: firstName },
+    },
+  };
+
+  await dynamodbClient.send(new UpdateItemCommand(updateParams));
+};

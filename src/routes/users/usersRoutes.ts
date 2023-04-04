@@ -1,8 +1,10 @@
 import { Request, Response, Router } from "express";
 import {
   CreateNewUserSchemaType,
+  UpdateUserDetailsSchemaType,
   UserLogInSchemaType,
   createNewUserSchema,
+  updateUserDetailsSchema,
   userLogInSchema,
 } from "./usersRoutes.schemas";
 import { auth, validateSchema } from "../../system/middlewares";
@@ -12,6 +14,7 @@ import {
   createNewUser,
   findUserById,
   hashPassword,
+  updateUserInfo,
 } from "../../repositories/userRepositories/users";
 import { ModifiedRequestInterface } from "../../system/utils";
 
@@ -99,16 +102,24 @@ userRoute.post(
 userRoute.put(
   "/user",
   auth,
+  validateSchema(updateUserDetailsSchema),
   async (
-    req: ModifiedRequestInterface<{}, {}, CreateNewUserSchemaType>,
+    req: ModifiedRequestInterface<{}, {}, UpdateUserDetailsSchemaType>,
     res: Response
   ) => {
     try {
-      const { firstName, id, lastName, phoneNumber } = req.currentUser!;
+      const { id } = req.currentUser!;
+      const { firstName, lastName, phoneNumber } = req.body;
 
-      // const { firstName, id, lastName, password, phoneNumber } = req.body;
+      const user = await findUserById(id);
 
-      return res.status(201).json({ firstName, id, lastName, phoneNumber });
+      if (!user) {
+        return res.status(404).json({ msg: "user not found" });
+      }
+
+      await updateUserInfo({ id, firstName, lastName, phoneNumber });
+
+      return res.status(202).json({ firstName, id, lastName, phoneNumber });
     } catch (err) {
       if (err instanceof Error) {
         console.error(err);
