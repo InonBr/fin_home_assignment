@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 services:
   dynamodb:
@@ -9,6 +9,9 @@ services:
       - AWS_ACCESS_KEY_ID=admin
       - AWS_SECRET_ACCESS_KEY=admin
       - AWS_REGION=us-west-2
+    volumes:
+      - ./dynamodb_data:/home/thegeekyasian/dynamodblocal/data
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/thegeekyasian/dynamodblocal/data/
 
   server:
     build:
