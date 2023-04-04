@@ -36,8 +36,15 @@ export const updateUserDetailsSchema = object().shape({
     .required(),
 });
 
+export const idParamsSchema = object().shape({
+  id: string()
+    .matches(/^[0-9]{9}$/, "ID must be a 9-digit number")
+    .required(),
+});
+
 export type CreateNewUserSchemaType = InferType<typeof createNewUserSchema>;
 export type UserLogInSchemaType = InferType<typeof userLogInSchema>;
 export type UpdateUserDetailsSchemaType = InferType<
   typeof updateUserDetailsSchema
 >;
+export type IdParamsSchemaType = InferType<typeof idParamsSchema>;

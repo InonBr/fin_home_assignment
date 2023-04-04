@@ -1,9 +1,11 @@
 import { Request, Response, Router } from "express";
 import {
   CreateNewUserSchemaType,
+  IdParamsSchemaType,
   UpdateUserDetailsSchemaType,
   UserLogInSchemaType,
   createNewUserSchema,
+  idParamsSchema,
   updateUserDetailsSchema,
   userLogInSchema,
 } from "./usersRoutes.schemas";
@@ -114,6 +116,39 @@ userRoute.put(
       await updateUserInfo({ id, firstName, lastName, phoneNumber });
 
       return res.status(202).json({ firstName, id, lastName, phoneNumber });
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err);
+
+        return res.status(500).json({ msg: err.message });
+      }
+    }
+  }
+);
+
+userRoute.get(
+  "/user/:id",
+  auth,
+  validateSchema(idParamsSchema, "p"),
+  async (
+    req: ModifiedRequestInterface<IdParamsSchemaType, {}, {}>,
+    res: Response
+  ) => {
+    try {
+      const { id } = req.params;
+
+      const user = await findUserById(id);
+
+      return res.status(200).json(
+        user
+          ? {
+              phoneNumber: user.PhoneNumber.S,
+              id,
+              lastName: user.LastName.S,
+              firstName: user.FirstName.S,
+            }
+          : null
+      );
     } catch (err) {
       if (err instanceof Error) {
         console.error(err);

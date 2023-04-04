@@ -4,10 +4,13 @@ import { ValidationError, ObjectSchema } from "yup";
 import { token } from "../config";
 import { DecodedTokenInterface, ModifiedRequestInterface } from "./utils";
 
-export const validateSchema = (schema: ObjectSchema<any>) => {
+export const validateSchema = (
+  schema: ObjectSchema<any>,
+  test: "b" | "p" = "b"
+) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await schema.validate(req.body, {
+      await schema.validate(test === "b" ? req.body : req.params, {
         abortEarly: false,
         stripUnknown: true,
       });
