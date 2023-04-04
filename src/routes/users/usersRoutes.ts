@@ -44,10 +44,7 @@ userRoute.post(
 
       return res.status(201).json({
         jwtToken: createJwtToken({
-          firstName: user.FirstName.S!,
           id,
-          lastName: user.LastName.S!,
-          phoneNumber: user.PhoneNumber.S!,
         }),
       });
     } catch (err) {
@@ -79,10 +76,7 @@ userRoute.post(
 
       return res.status(201).json({
         jwtToken: createJwtToken({
-          firstName,
           id,
-          lastName,
-          phoneNumber,
         }),
       });
     } catch (err) {

@@ -46,18 +46,10 @@ export const findUserById = async (userId: string) => {
   return (await dynamodbClient.send(new GetItemCommand(getItemParams))).Item;
 };
 
-export const createJwtToken = ({
-  firstName,
-  id,
-  lastName,
-  phoneNumber,
-}: Omit<UsersDataInterface, "password">) => {
+export const createJwtToken = ({ id }: Pick<UsersDataInterface, "id">) => {
   return sign(
     {
-      firstName,
       id,
-      lastName,
-      phoneNumber,
     },
     token
   );

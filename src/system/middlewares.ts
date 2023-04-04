@@ -36,10 +36,9 @@ export const auth = (
         res.status(401).send("forbidden request");
       }
 
-      const { firstName, id, lastName, phoneNumber } =
-        decodedToken as DecodedTokenInterface;
+      const { id } = decodedToken as DecodedTokenInterface;
 
-      req.currentUser = { firstName, id, lastName, phoneNumber };
+      req.currentUser = { id };
     });
 
     next();

@@ -1,10 +1,7 @@
 import { Request } from "express";
 
 export interface DecodedTokenInterface {
-  firstName: string;
   id: string;
-  lastName: string;
-  phoneNumber: string;
 }
 
 export interface ModifiedRequestInterface<
