@@ -9,4 +9,14 @@ services:
       - AWS_ACCESS_KEY_ID=admin
       - AWS_SECRET_ACCESS_KEY=admin
       - AWS_REGION=us-west-2
-      - DYNAMODB_LOCAL_ARGS=-dbPath /data/fin
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: server
+    ports:
+      - "5000:5000"
+    env_file: ./server/.env
+    depends_on:
+      - dynamodb
