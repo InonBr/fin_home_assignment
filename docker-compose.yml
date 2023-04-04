@@ -10,8 +10,8 @@ services:
       - AWS_SECRET_ACCESS_KEY=admin
       - AWS_REGION=us-west-2
     volumes:
-      - ./dynamodb_data:/home/thegeekyasian/dynamodblocal/data
-    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/thegeekyasian/dynamodblocal/data/
+      - ./dynamodb_data:/home/db/dynamodblocal/data
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/db/dynamodblocal/data/
 
   server:
     build:
